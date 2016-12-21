@@ -11,7 +11,7 @@ class Controller
 
     protected $app;
     protected $data;
-    protected $enableCsrfValidation = true;
+    protected $enableCsrfValidation = false;
     protected $csrfTokenName = "csrf_token";
 
     public function __construct()
@@ -252,6 +252,9 @@ class Controller
 
     /**
      * generate base URL
+     * http://localhost/hoge/public/
+     *
+     * @return string
      */
     protected function baseUrl()
     {
@@ -264,8 +267,11 @@ class Controller
 
     /**
      * generate siteUrl
+     * http://localhost/hoge/public/$path
+     *
+     * @param string path
      */
-    protected function siteUrl($path, $includeIndex = false)
+    protected function siteUrl($path)
     {
         $path = trim($path, '/');
         return $this->data['baseUrl'] . $path;

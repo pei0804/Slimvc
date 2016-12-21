@@ -14,6 +14,7 @@ Class RecipeController extends Controller
     // 検索画面
     public function index()
     {
+        var_dump(Input::get());
         $this->data['title'] = 'レシピ一覧';
         View::display('recipe/index.twig', $this->data);
     }
@@ -30,7 +31,16 @@ Class RecipeController extends Controller
     // 新規作成処理
     public function store()
     {
+        $Recipe = new Recipe();
+        $Recipe->load(Input::post());
+        $Recipe->validate();
 
+        if ($Recipe->hasErrors()) {
+            $this->data['title'] = 'レシピ新規作成';
+            print_r($Recipe->getErrors()); // return errors
+            $this->app->redirect('recipe/create');
+            View::display('recipe/input.twig', $this->data);
+        }
     }
 
     // getでrecipe/:idにアクセスされた場合
@@ -38,13 +48,6 @@ Class RecipeController extends Controller
     public function show($id)
     {
         $this->data['title'] = '◯◯料理レシピ';
-        $Recipe = new Recipe();
-        $Recipe->load(Input::get());
-        $Recipe->validate();
-
-        print Input::get('title');
-        print_r($Recipe->hasErrors()); // return boolean
-        print_r($Recipe->getErrors()); // return errors
         View::display('recipe/show.twig', $this->data);
     }
 
