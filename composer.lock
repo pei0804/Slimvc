@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d2797670b8dcc666ce0232b952a5c4bc",
-    "content-hash": "238a9a9f9b6944e40404c8efa4f2a2aa",
+    "hash": "533fe41ec1977818aa746982d1160d6f",
+    "content-hash": "cfc0b302210d8f4831220068f1a96924",
     "packages": [
         {
             "name": "cartalyst/sentry",
@@ -569,6 +569,44 @@
             "time": "2014-03-05 04:29:29"
         },
         {
+            "name": "modularr/flexible-php-pagination",
+            "version": "2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Modularr/Flexible-PHP-Pagination.git",
+                "reference": "1ddbbfbcf412efb4fbae10e8e305cd58d95b85c2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Modularr/Flexible-PHP-Pagination/zipball/1ddbbfbcf412efb4fbae10e8e305cd58d95b85c2",
+                "reference": "1ddbbfbcf412efb4fbae10e8e305cd58d95b85c2",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "pagination.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "UNLICENSE"
+            ],
+            "authors": [
+                {
+                    "name": "Blaxus",
+                    "email": "admin@daviddhont.com"
+                }
+            ],
+            "description": "The Flexible PHP pagination class was designed to be the easiest to use PHP Pagination system without losing any customization options.",
+            "homepage": "http://modularr.com",
+            "keywords": [
+                "pagination",
+                "php"
+            ],
+            "time": "2016-03-01 01:08:37"
+        },
+        {
             "name": "nesbot/carbon",
             "version": "1.17.0",
             "source": {
@@ -928,12 +966,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "7478b58b3dedcc6e8afeabc2a380f503bebe2f24"
+                "reference": "9b31db1ee6493e3439320ba959f2b37637317217"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/7478b58b3dedcc6e8afeabc2a380f503bebe2f24",
-                "reference": "7478b58b3dedcc6e8afeabc2a380f503bebe2f24",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/9b31db1ee6493e3439320ba959f2b37637317217",
+                "reference": "9b31db1ee6493e3439320ba959f2b37637317217",
                 "shasum": ""
             },
             "require": {
@@ -946,7 +984,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.29-dev"
+                    "dev-master": "1.30-dev"
                 }
             },
             "autoload": {
@@ -981,7 +1019,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2016-12-16 16:06:44"
+            "time": "2016-12-22 12:16:28"
         },
         {
             "name": "volnix/csrf",
