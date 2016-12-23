@@ -15,5 +15,7 @@ $config['aliases'] = array(
     'Route'     => 'Slimvc\Facade\RouteFacade',
     'DB'        => 'Slimvc\Facade\DatabaseFacade',
     'Module'    => 'Slimvc\Facade\ModuleManagerFacade',
-    'Menu'      => 'Slimvc\Facade\MenuManagerFacade'
+    'Menu'      => 'Slimvc\Facade\MenuManagerFacade',
+    'Validator' => 'Slimvc\Facade\ValidatorFacade',
+    'CSRF'      => 'Slimvc\Facade\CsrfProtectionFacade'
 );

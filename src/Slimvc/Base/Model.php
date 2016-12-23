@@ -2,8 +2,6 @@
 
 namespace Slimvc\Base;
 
-use Slimvc\Facade\ValidatorFacade as ValidationFactory;
-
 class Model extends \Illuminate\Database\Eloquent\Model {
 
     protected $errors;
@@ -90,7 +88,7 @@ class Model extends \Illuminate\Database\Eloquent\Model {
 
     public function validate()
     {
-        $v = ValidationFactory::make($this->attributes, static::rules(), static::messages());
+        $v = \Validator::make($this->attributes, static::rules(), static::messages());
         if (!$v->passes())
         {
             $this->setErrors($v->messages());
