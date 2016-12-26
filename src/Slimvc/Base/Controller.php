@@ -4,7 +4,6 @@ namespace Slimvc\Base;
 
 use \Slim;
 use \Request;
-use \Volnix\CSRF\CSRF as CSRF;
 
 class Controller
 {
@@ -277,16 +276,16 @@ class Controller
         return $this->data['baseUrl'] . $path;
     }
 
-    /**
-     * handle csrf
-     */
     protected function csrfEvent()
     {
-        if ($this->enableCsrfValidation) {
-            if (\Input::isPost()) {
-                try {
-                    CSRF::validate($this->csrfTokenName, $_POST, true, 60 * 10, false);
-                } catch (Exception $e) {
+        if($this->enableCsrfValidation){
+            if(\Input::isPost()){
+                try
+                {
+                    \CSRF::check( $this->csrfTokenName, $_POST, true, 60*10, false );
+                }
+                catch ( Exception $e )
+                {
                     // CSRF attack detected
                     // TODO: proper error handling
                     echo $e->getMessage();
@@ -295,9 +294,8 @@ class Controller
             }
 
             // order important!
-            $this->data[$this->csrfTokenName] = CSRF::generateToken($this->csrfTokenName);
-            $this->data['csrfTokenHiddenInput'] = CSRF::getHiddenInputString($this->csrfTokenName);
-
+            $this->data[$this->csrfTokenName] = \CSRF::generate($this->csrfTokenName);
+            $this->data['csrfTokenHiddenInput'] = \CSRF::getAsHiddenInput($this->csrfTokenName);
         }
     }
 }

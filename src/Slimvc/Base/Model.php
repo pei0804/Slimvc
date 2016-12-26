@@ -2,9 +2,16 @@
 
 namespace Slimvc\Base;
 
-class Model extends \Illuminate\Database\Eloquent\Model {
+use Paginaon;
+
+class Model extends \Illuminate\Database\Eloquent\Model
+{
 
     protected $errors;
+    protected $count = 0;
+    protected $perPage = 10;
+    protected $maxPage = 10;
+    public $timestamps = ture;
 
     protected static function rules()
     {
@@ -14,15 +21,17 @@ class Model extends \Illuminate\Database\Eloquent\Model {
     protected static function messages()
     {
         return [
-            'required' => '必須入力です',
+            'required' => '必須入力項目です',
             'integer' => '数値のみで入力してください',
             'email' => '入力されたメールアドレスの形式に間違いがあります',
             'mimes' => '動画はMP4形式でアップロードしてください',
             'string' => '不正な文字が入力されています',
+            'date_format' => '全て選択してください',
         ];
     }
 
-    public static function findOne($attribute, $operator, $value){
+    public static function findOne($attribute, $operator, $value)
+    {
         $result = static::findOneInternal($attribute, $operator, $value);
         return $result->count() > 0 ? $result : null;
     }
@@ -49,9 +58,9 @@ class Model extends \Illuminate\Database\Eloquent\Model {
 
     protected function internalSave(array $options = array(), $runValidation = true)
     {
-        if($runValidation && !$this->validate()) return false;
+        if ($runValidation && !$this->validate()) return false;
 
-        if($this->beforeSave() && parent::save($options)){
+        if ($this->beforeSave() && parent::save($options)) {
             $this->afterSave();
             return true;
         }
@@ -70,7 +79,7 @@ class Model extends \Illuminate\Database\Eloquent\Model {
 
     public function delete()
     {
-        if($this->beforeDelete() && parent::delete()){
+        if ($this->beforeDelete() && parent::delete()) {
             $this->afterDelete();
             return true;
         }
@@ -89,9 +98,8 @@ class Model extends \Illuminate\Database\Eloquent\Model {
     public function validate()
     {
         $v = \Validator::make($this->attributes, static::rules(), static::messages());
-        if (!$v->passes())
-        {
-            $this->setErrors($v->messages());
+        if (!$v->passes()) {
+            $this->setErrors($v->messages()->toArray());
             return false;
         }
         return true;
@@ -109,7 +117,7 @@ class Model extends \Illuminate\Database\Eloquent\Model {
 
     public function hasErrors()
     {
-        return ! empty($this->errors);
+        return !empty($this->errors);
     }
 
     public function load($data)
@@ -140,9 +148,9 @@ class Model extends \Illuminate\Database\Eloquent\Model {
         } elseif ($this->canGetProperty($name)) {
             return $this->getAttribute($name);
         } elseif (method_exists($this, 'set' . $name)) {
-            throw new Exception('Getting write-only property: ' . get_class($this) . '::' . $name);
+            throw new \Exception('Getting write-only property: ' . get_class($this) . '::' . $name);
         } else {
-            throw new Exception('Getting unknown property: ' . get_class($this) . '::' . $name);
+            throw new \Exception('Getting unknown property: ' . get_class($this) . '::' . $name);
         }
     }
 
@@ -164,9 +172,9 @@ class Model extends \Illuminate\Database\Eloquent\Model {
         } elseif ($this->canSetProperty($name)) {
             $this->setAttribute($name, $value);
         } elseif (method_exists($this, 'get' . $name)) {
-            throw new Exception('Setting read-only property: ' . get_class($this) . '::' . $name);
+            throw new \Exception('Setting read-only property: ' . get_class($this) . '::' . $name);
         } else {
-            throw new Exception('Setting unknown property: ' . get_class($this) . '::' . $name);
+            throw new \Exception('Setting unknown property: ' . get_class($this) . '::' . $name);
         }
     }
 
@@ -188,7 +196,7 @@ class Model extends \Illuminate\Database\Eloquent\Model {
             return $this->$getter() !== null;
         } else {
             return ((isset($this->attributes[$name]) || isset($this->relations[$name])) ||
-                ($this->hasGetMutator($name) && ! is_null($this->getAttributeValue($name))));
+                ($this->hasGetMutator($name) && !is_null($this->getAttributeValue($name))));
         }
     }
 
@@ -210,7 +218,7 @@ class Model extends \Illuminate\Database\Eloquent\Model {
         if (method_exists($this, $setter)) {
             $this->$setter(null);
         } elseif (method_exists($this, 'get' . $name)) {
-            throw new Exception('Unsetting read-only property: ' . get_class($this) . '::' . $name);
+            throw new \Exception('Unsetting read-only property: ' . get_class($this) . '::' . $name);
         } else {
             unset($this->attributes[$name], $this->relations[$name]);
         }
@@ -250,7 +258,7 @@ class Model extends \Illuminate\Database\Eloquent\Model {
      */
     public function canGetProperty($name, $checkVars = true)
     {
-        return method_exists($this, 'get' . $name)  || array_key_exists($name, $this->attributes) || in_array($name, $this->columnListing) || $checkVars && property_exists($this, $name);
+        return method_exists($this, 'get' . $name) || array_key_exists($name, $this->attributes) || in_array($name, $this->columnListing) || $checkVars && property_exists($this, $name);
     }
 
     /**
@@ -283,4 +291,36 @@ class Model extends \Illuminate\Database\Eloquent\Model {
     {
         return method_exists($this, $name);
     }
+
+    /*
+     *
+     */
+
+    public function findAllPerPage($page)
+    {
+        if($page == 0) {
+            $page = 1;
+        }
+        $page--;
+        $this->count = $this->all()->count();
+        return $this->all()->slice($page * $this->perPage)->take($this->perPage);
+    }
+
+    public function findByQueryPerPage($query, $page)
+    {
+        if($page == 0) {
+            $page = 1;
+        }
+        $page--;
+        $this->count = $query->count();
+        return $query->get()->slice($page * $this->perPage)->take($this->perPage);
+    }
+
+    public function paginationNav($page, $url)
+    {
+        $pager = new Pagination($this->perPage, $this->count, $page, $this->maxPage);
+        $pager->url = $url . '?page=';
+        return $pager;
+    }
+
 }
